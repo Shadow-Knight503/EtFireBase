@@ -1,3 +1,5 @@
+{% load Filters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,50 +13,68 @@
         font-family: "Century Gothic", sans-serif;
         color: white;
     }
+    .neonText {
+        color: #fff;
+        text-shadow:
+            0 0 7px #fff,
+            0 0 10px #fff,
+            0 0 21px #fff,
+            0 0 42px #0fa,
+            0 0 82px #0fa,
+            0 0 92px #0fa,
+            0 0 102px #0fa,
+            0 0 151px #0fa;
+}
 </style>
 <h5>Hello World</h5>
+<h3 class="neonText">This is the data:</h3>
 <p>{{ data }}</p>
-<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+{% for datum, val in data.items %}
+    <canvas class="Chart" id="Chart_{{ datum }}" style="width:100%;max-width:600px"></canvas>
+{% endfor %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <script>
-var xValues = [];
-var yValues = [];
-const barColors = "rgba(243, 7, 7, 0.78)";
+    let barColors = "rgba(243, 7, 7, 0.78)";
+    {% for datum, dataval in data.items %}
+        var xValues = [];
+        var yValues = [];
+        console.log({{ datum }})
 
-{% for datum, datval in data.items %}
-    xValues.push({{ datum }})
-    yValues.push({{ datval }})
-{% endfor %}
-
-
-new Chart("myChart", {
-    type: "bar",
-    data: {
-        labels: xValues,
-        datasets: [{
-            backgroundColor: barColors,
-            borderColor: "green",
-            data: yValues
-        }]
-    },
-    options: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: "Power Consumption Data of "
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
+        {% for dat, aval in dataval.items %}
+            xValues.push({{ dat }})
+            yValues.push({{ aval }})
+        {% endfor %}
+        console.log(xValues)
+        console.log(yValues)
+        new Chart("Chart_{{ datum }}", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    borderColor: "green",
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: "Power Consumption Data of {{ datum }}"
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        barPercentage: 0.4
+                    }]
                 }
-            }],
-            xAxes: [{
-                barPercentage: 0.4
-            }]
-        }
-    }
-});
+            }
+        });
+    {% endfor %}
 </script>
 </body>
 </html>

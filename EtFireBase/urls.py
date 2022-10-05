@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-import EtFireBase.views
+import Base.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', EtFireBase.views.Home, name="Home Page")
+    path('', Base.views.Home, name="Home Page")
 ]
